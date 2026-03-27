@@ -15,7 +15,7 @@ conn = mysql.connector.connect(
 )
 cursor = conn.cursor()
 
-# ROSBridge 서버 연결
+# ROSBridge 서버 연결 : 리눅스와 윈도우 다르기 때문에 중계 역할의 브릿지 연결
 client = roslibpy.Ros(host='localhost', port=9090)
 client.run()
 
@@ -25,7 +25,7 @@ while not client.is_connected:
 
 print('Connected to ROSBridge:', client.is_connected)
 
-# LaserScan 토픽 구독
+# LaserScan 토픽 구독 : laserscan 값 읽어오기
 laser_sub = roslibpy.Topic(client, '/scan', 'sensor_msgs/LaserScan')
 
 safe_dist = 0.5  # 안전거리 기준
@@ -44,9 +44,9 @@ def callback(message):
         return
 
     # 방향별 데이터 추출 + 정제
-    front = clean_ranges(np.r_[ranges[350:360], ranges[0:10]])
-    left  = clean_ranges(ranges[80:100])
-    right = clean_ranges(ranges[260:280])
+    front = clean_ranges(np.r_[ranges[350:360], ranges[0:10]]) # 0도 기준의 좌우 10도
+    left  = clean_ranges(ranges[80:100]) # 90도 기준의 좌우 10도
+    right = clean_ranges(ranges[260:280]) # 270도 기준의 좌우 10도
 
     # 평균 계산 (비어있으면 최대값 사용)
     front_dist = np.mean(front) if len(front) > 0 else RANGE_MAX

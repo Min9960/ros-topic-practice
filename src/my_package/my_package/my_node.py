@@ -1,4 +1,3 @@
-# file: lidar_publisher.py
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import LaserScan
